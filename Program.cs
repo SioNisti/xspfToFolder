@@ -78,6 +78,7 @@ namespace xspfToFolder
 
             int i = 1;
             repeat = 0;
+            int tmprepeat = 0;
             repeat2 = 1;
             foreach (Track t2 in tracksR)
             {
@@ -85,17 +86,20 @@ namespace xspfToFolder
                 tmpSeconds += t2.duration;
                 string[] trackName = loca.Split('/');
                 Console.WriteLine($"{t2.creator} - {t2.title}");
-                Console.WriteLine($"{tmpSeconds}/{seconds} ({i / 2 + 1}/{tracksR.Count})");
+                Console.WriteLine($"{tmpSeconds}/{seconds} ({i / 2 + 1}/{tracksR.Count}) (Folder: {repeat2})");
                 if (multi)
                 {
                     repeat += t2.duration;
-                    if (repeat / 1000 > 4740)
+                    tmprepeat -= t2.duration;
+                    if (tmprepeat / 1000 < 4740)
                     {
-                        //Console.ForegroundColor = ConsoleColor.Cyan;
-                        //Console.WriteLine($"{repeat/1000} {4740}");
-                        //Console.ForegroundColor = ConsoleColor.White;
-                        repeat = 0;
-                        repeat2++;
+                        //Console.WriteLine($"{repeat / 1000} / {4740} - {tmprepeat}");
+                        if (repeat / 1000 > 4740)
+                        {
+                            tmprepeat = repeat;
+                            repeat = 0;
+                            repeat2++;
+                        }
                     }
 
                     System.IO.File.Copy(loca, $"{name.Remove(name.Length - 5, 5)}/CD{repeat2}/{Path.GetFileName(loca)}", true);

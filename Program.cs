@@ -28,6 +28,7 @@ namespace xspfToFolder
                 return;
 
             path = Path.GetDirectoryName(args[0]) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(args[0]) + Path.GetExtension(args[0]);
+            //path = "C:/Users/Silen Tonion/source/repos/xspfToFolder 2/bin/Debug/netcoreapp3.1/.autolle.xspf";
             name = Path.GetFileName(path);
             //Console.WriteLine(path);
 
@@ -50,16 +51,18 @@ namespace xspfToFolder
             int tmpSeconds = 0;
             bool multi = false;
 
+            int p = 0;
             foreach (Track t in tracks)
             {
                 seconds += t.duration;
 
                 repeat += t.duration;
-                if (repeat / 1000 > 4740)
+                if ((repeat + tracks[p].duration) / 1000 > 4800)
                 {
-                    repeat = 0;
+                    repeat = tracks[p].duration;
                     repeat2++;
                 }
+                p++;
             }
 
             Directory.CreateDirectory(name.Remove(name.Length - 5, 5));
@@ -77,8 +80,8 @@ namespace xspfToFolder
             var tracksR = tracks.OrderBy(_ => rng.Next()).ToList();
 
             int i = 1;
+            int i2 = 0;
             repeat = 0;
-            int tmprepeat = 0;
             repeat2 = 1;
             foreach (Track t2 in tracksR)
             {
@@ -86,29 +89,31 @@ namespace xspfToFolder
                 tmpSeconds += t2.duration;
                 string[] trackName = loca.Split('/');
                 Console.WriteLine($"{t2.creator} - {t2.title}");
-                Console.WriteLine($"{tmpSeconds}/{seconds} ({i / 2 + 1}/{tracksR.Count}) (Folder: {repeat2})");
                 if (multi)
                 {
                     repeat += t2.duration;
-                    tmprepeat -= t2.duration;
-                    if (tmprepeat / 1000 < 4740)
-                    {
-                        //Console.WriteLine($"{repeat / 1000} / {4740} - {tmprepeat}");
-                        if (repeat / 1000 > 4740)
-                        {
-                            tmprepeat = repeat;
-                            repeat = 0;
-                            repeat2++;
-                        }
-                    }
+
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"{tmpSeconds}/{seconds} ({i2}/{tracksR.Count}) (Folder: {repeat2}) ({repeat / 60000}min)");
+                    Console.ForegroundColor = ConsoleColor.White;
 
                     System.IO.File.Copy(loca, $"{name.Remove(name.Length - 5, 5)}/CD{repeat2}/{Path.GetFileName(loca)}", true);
+
+                    if ((repeat + tracksR[i2].duration) / 1000 > 4800)
+                    {
+                        repeat = 0;
+                        repeat2++;
+                    }
                 }
                 else
                 {
-                    System.IO.File.Copy(loca, name.Remove(name.Length - 5, 5) + "/" + Path.GetFileName(loca), true);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"{tmpSeconds}/{seconds} ({i2}/{tracksR.Count}) ({tmpSeconds / 60000}min)");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    System.IO.File.Copy(loca, $"{name.Remove(name.Length - 5, 5)}/{Path.GetFileName(loca)}", true);
                 }
                 i += 2;
+                i2++;
                 Console.SetWindowPosition(0, i + 1);
             }
 

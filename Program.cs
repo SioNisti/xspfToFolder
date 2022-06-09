@@ -61,7 +61,7 @@ namespace xspfToFolder
                 seconds += t.duration;
 
                 repeat += t.duration;
-                if ((repeat + tracks[p].duration) / 1000 > 4740)
+                if ((repeat + tracks[p].duration) > 4800000)
                 {
                     repeat = tracks[p].duration;
                     repeat2++;

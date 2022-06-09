@@ -9,6 +9,8 @@
     <Copyright>sionTea</Copyright>
     <PackageProjectUrl>https://github.com/SioNisti/xspfToFolder/tree/master</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SioNisti/xspfToFolder/tree/master</RepositoryUrl>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

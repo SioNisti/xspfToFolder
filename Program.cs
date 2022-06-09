@@ -25,10 +25,14 @@ namespace xspfToFolder
         static void Main(string[] args)
         {
             if (args.Length == 0)
+            {
+                Console.WriteLine($"Drag a xspf file on the exe.");
+                Console.ReadKey();
                 return;
+            }
 
             path = Path.GetDirectoryName(args[0]) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(args[0]) + Path.GetExtension(args[0]);
-            //path = "C:/Users/Silen Tonion/source/repos/xspfToFolder 2/bin/Debug/netcoreapp3.1/.autolle.xspf";
+            //path = "C:/Users/Silen Tonion/source/repos/xspfToFolder 2/bin/Debug/netcoreapp3.1/.kaikki.xspf";
             name = Path.GetFileName(path);
             //Console.WriteLine(path);
 
@@ -57,7 +61,7 @@ namespace xspfToFolder
                 seconds += t.duration;
 
                 repeat += t.duration;
-                if ((repeat + tracks[p].duration) / 1000 > 4800)
+                if ((repeat + tracks[p].duration) / 1000 > 4740)
                 {
                     repeat = tracks[p].duration;
                     repeat2++;
@@ -81,6 +85,7 @@ namespace xspfToFolder
 
             int i = 1;
             int i2 = 0;
+            int juttu = 1;
             repeat = 0;
             repeat2 = 1;
             foreach (Track t2 in tracksR)
@@ -93,14 +98,21 @@ namespace xspfToFolder
                 {
                     repeat += t2.duration;
 
+                    if (i2 >= tracksR.Count - 1)
+                    {
+                        juttu = 0;
+                    }
+
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine($"{tmpSeconds}/{seconds} ({i2}/{tracksR.Count}) (Folder: {repeat2}) ({repeat / 60000}min)");
+                    //Console.WriteLine($"{tmpSeconds}/{seconds} ({i2 + 1}/{tracksR.Count}) (Folder: {repeat2}) ({repeat / 60000}min) [{(repeat)} + {(tracksR[i2 + juttu].duration)} = {(repeat + tracksR[i2 + juttu].duration)} > 4800000]");
+                    Console.WriteLine($"{tmpSeconds / 1000}/{seconds / 1000} ({i2 + 1}/{tracksR.Count}) (Folder: {repeat2}) ({repeat / 60000}min)");
                     Console.ForegroundColor = ConsoleColor.White;
 
                     System.IO.File.Copy(loca, $"{name.Remove(name.Length - 5, 5)}/CD{repeat2}/{Path.GetFileName(loca)}", true);
 
-                    if ((repeat + tracksR[i2].duration) / 1000 > 4800)
+                    if ((repeat + tracksR[i2 + juttu].duration) > 4800000)
                     {
+                        //Console.ReadKey();
                         repeat = 0;
                         repeat2++;
                     }
@@ -117,7 +129,7 @@ namespace xspfToFolder
                 Console.SetWindowPosition(0, i + 1);
             }
 
-            Console.SetWindowPosition(0, i + 1);
+            Console.SetWindowPosition(0, i - 1);
             Console.WriteLine("Done.");
             Console.ReadKey();
         }
